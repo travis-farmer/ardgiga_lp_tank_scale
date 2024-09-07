@@ -246,6 +246,16 @@ void loop()
     Serial.print("\tAvgWeight: ");
     Serial.print(avgWeight, 2); //Print 2 decimal places
 
+    if (millis() - lastTimer > 1000) {
+        lastTimer = millis();
+        float WeightPcent = map(avgWeight,1.00,25.00,0.00,100.00); // first and second values need adjusting...
+        if (WeightPcent > 100.00) WeightPcent = 100;
+        if (WeightPcent < 0) WeightPcent = 0;
+        char tmpWeightPcent[8];
+        sprintf(tmpWeightPcent, "%6.2f", WeightPcent);
+        client.publish("generator/Status/Engine/fuel",tmpWeightPcent);
+    }
+
     if(settingsDetected == false)
     {
       Serial.print("\tScale not calibrated. Press 'c'.");
